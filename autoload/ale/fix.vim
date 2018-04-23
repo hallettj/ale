@@ -13,6 +13,12 @@ function! ale#fix#ApplyQueuedFixes() abort
     call remove(g:ale_fix_buffer_data, l:buffer)
 
     if l:data.changes_made
+        " If called from a save event then join fixes in the same undo block with
+        " previous changes.
+        if l:data.should_save
+            silent! undojoin
+        endif
+
         let l:start_line = len(l:data.output) + 1
         let l:end_line = len(l:data.lines_before)
 
