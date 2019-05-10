@@ -221,6 +221,12 @@ function! s:RunFixer(options) abort
     let l:index = a:options.callback_index
 
     if len(a:options.callback_list) <= l:index
+        if g:ale_fix_on_save
+            try
+                undojoin
+            catch /^Vim\%((\a\+)\)\=:E790
+            endtry
+        endif
         call ale#fix#ApplyFixes(l:buffer, l:input)
 
         return
